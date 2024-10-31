@@ -2,7 +2,7 @@
 
 A multithreaded web table, capable of running 120fps while sorting/filtering/scrolling simultaneously. 
 
-Follow on X for updates & soon video walk-through: https://x.com/GabrielPeterss4
+Posting updates & soon video walk-through: https://x.com/GabrielPeterss4. DMs are open, curious to hear about use-cases or advise on how to use it :) 
 
 ### Capabilites
 
