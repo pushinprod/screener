@@ -57,9 +57,6 @@ export class RowComponent {
     this.renderCells();
   }
   destroy() {
-    // TODO(gab): can speed be improved?
-    // https://github.com/brianmhunt/knockout-fast-foreach/issues/37
-    // TODO(gab): should not need this, but crashes on my other computer otherwise. check
     if (this.grid.container.contains(this.el)) {
       this.grid.container.removeChild(this.el);
     } else {

@@ -141,7 +141,6 @@ const generateCells = (rowIdx: number, stock: StockData): Cell[] => [
 ];
 
 export const generateRows = async (
-  rowCount: number,
   grid: Grid,
   cb: () => void
 ) => {

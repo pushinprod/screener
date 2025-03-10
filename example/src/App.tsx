@@ -5,8 +5,6 @@ import { useState, useRef, useEffect } from "react";
 
 export const FastGrid = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [grid, setGrid] = useState<Grid | null>(null);
   const [loadingRows, setLoadingRows] = useState(false);
 
   useEffect(() => {
@@ -15,18 +13,10 @@ export const FastGrid = () => {
       return;
     }
 
-    const t0 = performance.now();
     const grid = new Grid(container, [], COLUMNS);
-    setGrid(grid);
-    console.info("Ms to initialize grid:", performance.now() - t0);
 
     setLoadingRows(true);
-    generateRows(1000, grid, () => setLoadingRows(false));
-
-    (window as any).__grid = grid;
-    return () => {
-      grid.destroy();
-    };
+    generateRows(grid, () => setLoadingRows(false));
   }, []);
 
   return (
