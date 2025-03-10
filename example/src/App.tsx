@@ -28,7 +28,7 @@ export const FastGrid = () => {
         Stock Screener
       </div>
       <div className="mb-4 mt-1 self-start text-sm max-md:mt-2 sm:text-[13px]">
-        Code from:
+        Forked from:
         <a
           className="ml-1 text-blue-600 underline hover:text-blue-800"
           href="https://github.com/gabrielpetersson/fast-grid/"
