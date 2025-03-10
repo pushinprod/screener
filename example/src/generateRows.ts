@@ -137,7 +137,6 @@ const generateCells = (rowIdx: number, stock: StockData): Cell[] => [
   
   // Shareholder Returns
   createCell(rowIdx, 27, formatters.percentage(stock.shareholder_returns.dividend_payout_ratio / 100)),
-  createCell(rowIdx, 28, formatters.percentage(stock.shareholder_returns.buybacks))
 ];
 
 export const generateRows = async (
@@ -199,5 +198,4 @@ export const COLUMNS = [
   "FCF Growth",
   // Shareholder Returns
   "Dividend Payout Ratio",
-  "Buybacks"
 ];
