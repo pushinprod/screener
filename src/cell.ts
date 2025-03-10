@@ -30,10 +30,6 @@ export class StringCell implements CellComponent {
     this.width = CELL_WIDTH;
 
     this.el = document.createElement("div");
-    // NOTE(gab): fonts are super expensive, might be more simple fonts that are faster to render? testing to render a cursive text with subpixel antialiasing, vs
-    // rendering monospace text with text smoothing
-    // https://codesandbox.io/s/performance-test-disabling-text-antialiasing-om6f3q?file=/index.js
-    // NOTE(gab): align-items actually has a super slight imapact on Layerize time, using padding for now
     this.el.className =
       "flex h-full pt-[7px] border-[0] border-r border-b border-solid border-gray-700 text-gray-800 box-border cursor-default pl-[6px] absolute left-0 font-mono text-[14px]";
     this.el.style.width = `${CELL_WIDTH}px`;
