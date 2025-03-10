@@ -13,6 +13,133 @@ async function fetchStocksData() {
 
 const TOTAL_COLUMNS = 30;
 
+// Types
+type StockData = {
+  ticker: string;
+  company_name: string;
+  market_cap: number;
+  enterprise_value: number;
+  valuation: {
+    pe: number;
+    pb: number;
+    ps: number;
+    ev_s: number;
+    ev_fcf: number;
+  };
+  margins: {
+    gross_margin: number;
+    operating_margin: number;
+    fcf_margin: number;
+    gross_margin_median: number;
+    operating_margin_median: number;
+    fcf_margin_median: number;
+  };
+  returns: {
+    roic: number;
+    roa: number;
+    roe: number;
+    roce: number;
+    rotce: number;
+  };
+  capital_structure: {
+    assets_to_equity: number;
+    debt_to_equity: number;
+    debt_to_assets: number;
+  };
+  growth_10yr: {
+    revenue_growth: number;
+    asset_growth: number;
+    eps_growth: number;
+    fcf_growth: number;
+  };
+  shareholder_returns: {
+    dividend_payout_ratio: number;
+    buybacks: number;
+  };
+};
+
+type Cell = {
+  id: number;
+  v: string | number;
+};
+
+// Formatting helpers
+const formatters = {
+  percentage: (value: number, decimals = 1) => 
+    `${(value * 100).toFixed(decimals)}%`,
+  
+  ratio: (value: number, decimals = 2) => 
+    value.toFixed(decimals),
+  
+  currency: (value: number) => 
+    Math.round(value),
+  
+  text: (value: string) => 
+    value
+};
+
+// Cell creation helper
+const createCell = (rowIdx: number, colIdx: number, value: string | number): Cell => ({
+  id: rowIdx * TOTAL_COLUMNS + colIdx,
+  v: value
+});
+
+// Data transformation functions
+const transformValuationMetrics = (rowIdx: number, valuation: StockData['valuation']): Cell[] => {
+  const metrics = ['pe', 'pb', 'ps', 'ev_s', 'ev_fcf'] as const;
+  return metrics.map((metric, idx) => 
+    createCell(rowIdx, idx + 4, formatters.ratio(valuation[metric]))
+  );
+};
+
+const transformMargins = (rowIdx: number, margins: StockData['margins']): Cell[] => {
+  const currentMargins = ['gross_margin', 'operating_margin', 'fcf_margin'] as const;
+  const medianMargins = currentMargins.map(m => `${m}_median` as const);
+  
+  return [
+    ...currentMargins.map((margin, idx) => 
+      createCell(rowIdx, idx + 9, formatters.percentage(margins[margin]))
+    ),
+    ...medianMargins.map((margin, idx) => 
+      createCell(rowIdx, idx + 12, formatters.percentage(margins[margin]))
+    )
+  ];
+};
+
+// Main cell generation
+const generateCells = (rowIdx: number, stock: StockData): Cell[] => [
+  // Company Info
+  createCell(rowIdx, 0, formatters.text(stock.ticker)),
+  createCell(rowIdx, 1, formatters.text(stock.company_name)),
+  createCell(rowIdx, 2, formatters.currency(stock.market_cap)),
+  createCell(rowIdx, 3, formatters.currency(stock.enterprise_value)),
+  
+  // Valuation
+  ...transformValuationMetrics(rowIdx, stock.valuation),
+  
+  // Margins
+  ...transformMargins(rowIdx, stock.margins),
+  
+  // Returns
+  ...Object.entries(stock.returns).map(([_, value], idx) =>
+    createCell(rowIdx, idx + 15, formatters.percentage(value))
+  ),
+  
+  // Capital Structure
+  ...Object.entries(stock.capital_structure).map(([_, value], idx) =>
+    createCell(rowIdx, idx + 20, formatters.ratio(value))
+  ),
+  
+  // Growth
+  ...Object.entries(stock.growth_10yr).map(([_, value], idx) =>
+    createCell(rowIdx, idx + 23, formatters.percentage(value))
+  ),
+  
+  // Shareholder Returns
+  createCell(rowIdx, 27, formatters.percentage(stock.shareholder_returns.dividend_payout_ratio / 100)),
+  createCell(rowIdx, 28, formatters.percentage(stock.shareholder_returns.buybacks))
+];
+
 export const generateRows = async (
   rowCount: number,
   grid: Grid,
@@ -28,43 +155,7 @@ export const generateRows = async (
     }
 
     const stock = stocksData[rowIdx];
-    const cells = [
-      { id: rowIdx * TOTAL_COLUMNS, v: stock.ticker },
-      { id: rowIdx * TOTAL_COLUMNS + 1, v: stock.company_name },
-      { id: rowIdx * TOTAL_COLUMNS + 2, v: Math.round(stock.market_cap) },
-      { id: rowIdx * TOTAL_COLUMNS + 3, v: Math.round(stock.enterprise_value) },
-      // Valuation
-      { id: rowIdx * TOTAL_COLUMNS + 4, v: stock.valuation.pe.toFixed(1) },
-      { id: rowIdx * TOTAL_COLUMNS + 5, v: stock.valuation.pb.toFixed(1) },
-      { id: rowIdx * TOTAL_COLUMNS + 6, v: stock.valuation.ps.toFixed(1) },
-      { id: rowIdx * TOTAL_COLUMNS + 7, v: stock.valuation.ev_s.toFixed(1) },
-      { id: rowIdx * TOTAL_COLUMNS + 8, v: stock.valuation.ev_fcf.toFixed(1) },
-      // Margins
-      { id: rowIdx * TOTAL_COLUMNS + 9, v: (stock.margins.gross_margin * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 10, v: (stock.margins.operating_margin * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 11, v: (stock.margins.fcf_margin * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 12, v: (stock.margins.gross_margin_median * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 13, v: (stock.margins.operating_margin_median * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 14, v: (stock.margins.fcf_margin_median * 100).toFixed(1) + '%' },
-      // Returns
-      { id: rowIdx * TOTAL_COLUMNS + 15, v: (stock.returns.roic * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 16, v: (stock.returns.roa * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 17, v: (stock.returns.roe * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 18, v: (stock.returns.roce * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 19, v: (stock.returns.rotce * 100).toFixed(1) + '%' },
-      // Capital Structure
-      { id: rowIdx * TOTAL_COLUMNS + 20, v: stock.capital_structure.assets_to_equity.toFixed(2) },
-      { id: rowIdx * TOTAL_COLUMNS + 21, v: stock.capital_structure.debt_to_equity.toFixed(2) },
-      { id: rowIdx * TOTAL_COLUMNS + 22, v: stock.capital_structure.debt_to_assets.toFixed(2) },
-      // Growth
-      { id: rowIdx * TOTAL_COLUMNS + 23, v: (stock.growth_10yr.revenue_growth * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 24, v: (stock.growth_10yr.asset_growth * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 25, v: (stock.growth_10yr.eps_growth * 100).toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 26, v: (stock.growth_10yr.fcf_growth * 100).toFixed(1) + '%' },
-      // Shareholder Returns
-      { id: rowIdx * TOTAL_COLUMNS + 27, v: stock.shareholder_returns.dividend_payout_ratio.toFixed(1) + '%' },
-      { id: rowIdx * TOTAL_COLUMNS + 28, v: (stock.shareholder_returns.buybacks * 100).toFixed(1) + '%' }
-    ];
+    const cells = generateCells(rowIdx, stock);
 
     rows.push({ id: rowIdx, cells });
   }
