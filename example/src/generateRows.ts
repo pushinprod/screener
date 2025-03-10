@@ -11,6 +11,8 @@ async function fetchStocksData() {
   }));
 }
 
+const TOTAL_COLUMNS = 30;
+
 export const generateRows = async (
   rowCount: number,
   grid: Grid,
@@ -27,41 +29,41 @@ export const generateRows = async (
 
     const stock = stocksData[rowIdx];
     const cells = [
-      { id: rowIdx * 30, v: stock.ticker },
-      { id: rowIdx * 30 + 1, v: stock.company_name },
-      { id: rowIdx * 30 + 2, v: Math.round(stock.market_cap) },
-      { id: rowIdx * 30 + 3, v: Math.round(stock.enterprise_value) },
+      { id: rowIdx * TOTAL_COLUMNS, v: stock.ticker },
+      { id: rowIdx * TOTAL_COLUMNS + 1, v: stock.company_name },
+      { id: rowIdx * TOTAL_COLUMNS + 2, v: Math.round(stock.market_cap) },
+      { id: rowIdx * TOTAL_COLUMNS + 3, v: Math.round(stock.enterprise_value) },
       // Valuation
-      { id: rowIdx * 30 + 4, v: stock.valuation.pe.toFixed(1) },
-      { id: rowIdx * 30 + 5, v: stock.valuation.pb.toFixed(1) },
-      { id: rowIdx * 30 + 6, v: stock.valuation.ps.toFixed(1) },
-      { id: rowIdx * 30 + 7, v: stock.valuation.ev_s.toFixed(1) },
-      { id: rowIdx * 30 + 8, v: stock.valuation.ev_fcf.toFixed(1) },
+      { id: rowIdx * TOTAL_COLUMNS + 4, v: stock.valuation.pe.toFixed(1) },
+      { id: rowIdx * TOTAL_COLUMNS + 5, v: stock.valuation.pb.toFixed(1) },
+      { id: rowIdx * TOTAL_COLUMNS + 6, v: stock.valuation.ps.toFixed(1) },
+      { id: rowIdx * TOTAL_COLUMNS + 7, v: stock.valuation.ev_s.toFixed(1) },
+      { id: rowIdx * TOTAL_COLUMNS + 8, v: stock.valuation.ev_fcf.toFixed(1) },
       // Margins
-      { id: rowIdx * 30 + 9, v: (stock.margins.gross_margin * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 10, v: (stock.margins.operating_margin * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 11, v: (stock.margins.fcf_margin * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 12, v: (stock.margins.gross_margin_median * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 13, v: (stock.margins.operating_margin_median * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 14, v: (stock.margins.fcf_margin_median * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 9, v: (stock.margins.gross_margin * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 10, v: (stock.margins.operating_margin * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 11, v: (stock.margins.fcf_margin * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 12, v: (stock.margins.gross_margin_median * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 13, v: (stock.margins.operating_margin_median * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 14, v: (stock.margins.fcf_margin_median * 100).toFixed(1) + '%' },
       // Returns
-      { id: rowIdx * 30 + 15, v: (stock.returns.roic * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 16, v: (stock.returns.roa * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 17, v: (stock.returns.roe * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 18, v: (stock.returns.roce * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 19, v: (stock.returns.rotce * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 15, v: (stock.returns.roic * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 16, v: (stock.returns.roa * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 17, v: (stock.returns.roe * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 18, v: (stock.returns.roce * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 19, v: (stock.returns.rotce * 100).toFixed(1) + '%' },
       // Capital Structure
-      { id: rowIdx * 30 + 20, v: stock.capital_structure.assets_to_equity.toFixed(2) },
-      { id: rowIdx * 30 + 21, v: stock.capital_structure.debt_to_equity.toFixed(2) },
-      { id: rowIdx * 30 + 22, v: stock.capital_structure.debt_to_assets.toFixed(2) },
+      { id: rowIdx * TOTAL_COLUMNS + 20, v: stock.capital_structure.assets_to_equity.toFixed(2) },
+      { id: rowIdx * TOTAL_COLUMNS + 21, v: stock.capital_structure.debt_to_equity.toFixed(2) },
+      { id: rowIdx * TOTAL_COLUMNS + 22, v: stock.capital_structure.debt_to_assets.toFixed(2) },
       // Growth
-      { id: rowIdx * 30 + 23, v: (stock.growth_10yr.revenue_growth * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 24, v: (stock.growth_10yr.asset_growth * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 25, v: (stock.growth_10yr.eps_growth * 100).toFixed(1) + '%' },
-      { id: rowIdx * 30 + 26, v: (stock.growth_10yr.fcf_growth * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 23, v: (stock.growth_10yr.revenue_growth * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 24, v: (stock.growth_10yr.asset_growth * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 25, v: (stock.growth_10yr.eps_growth * 100).toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 26, v: (stock.growth_10yr.fcf_growth * 100).toFixed(1) + '%' },
       // Shareholder Returns
-      { id: rowIdx * 30 + 27, v: stock.shareholder_returns.dividend_payout_ratio.toFixed(1) + '%' },
-      { id: rowIdx * 30 + 28, v: (stock.shareholder_returns.buybacks * 100).toFixed(1) + '%' }
+      { id: rowIdx * TOTAL_COLUMNS + 27, v: stock.shareholder_returns.dividend_payout_ratio.toFixed(1) + '%' },
+      { id: rowIdx * TOTAL_COLUMNS + 28, v: (stock.shareholder_returns.buybacks * 100).toFixed(1) + '%' }
     ];
 
     rows.push({ id: rowIdx, cells });
