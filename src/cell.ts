@@ -1,11 +1,12 @@
 import { Grid } from "./grid";
 
-export const CELL_WIDTH = 200;
+export const CELL_WIDTH = 400;
 
 export type CellComponent = {
   id: number;
   el: HTMLDivElement;
   _offset: number;
+  width: number;
 
   setContent: (text: string | number) => void;
   setOffset: (offset: number, force?: boolean) => void;
@@ -21,10 +22,12 @@ export class StringCell implements CellComponent {
   id: number;
   el: HTMLDivElement;
   _offset: number;
+  width: number;
 
   constructor(id: number, offset: number, text: string | number) {
     this.id = id;
     this._offset = offset;
+    this.width = CELL_WIDTH;
 
     this.el = document.createElement("div");
     // NOTE(gab): fonts are super expensive, might be more simple fonts that are faster to render? testing to render a cursive text with subpixel antialiasing, vs
@@ -59,10 +62,12 @@ export class HeaderCell implements CellComponent {
   id: number;
   el: HTMLDivElement;
   _offset: number;
+  width: number;
 
   constructor(id: number, offset: number, text: string | number) {
     this.id = id;
     this._offset = offset;
+    this.width = CELL_WIDTH;
 
     this.el = document.createElement("div");
     this.el.className =
@@ -103,6 +108,7 @@ export class FilterCell implements CellComponent {
   input: HTMLInputElement;
   arrow: SVGSVGElement;
   _offset: number;
+  width: number;
 
   constructor(
     id: number,
@@ -115,6 +121,7 @@ export class FilterCell implements CellComponent {
     this.index = index;
     this.id = id;
     this._offset = offset;
+    this.width = CELL_WIDTH;
 
     this.el = document.createElement("div");
     this.el.className =
